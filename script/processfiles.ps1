@@ -7,8 +7,6 @@
 # 
 # Not tested or checked for production use.
 # 
-# Author: Giles Davies
-# Contact: giles.davies@microsoft.com
 # ============================================================
 
 # Pre-requisites:
