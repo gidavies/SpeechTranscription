@@ -79,7 +79,7 @@ stages:
                 displayName: 'Create resource group $(Azure.ResourceGroup)'
                 inputs:
                   azureSubscription: '$(Azure.Sub)'
-                  scriptType: 'ps'
+                  scriptType: 'pscore'
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az group create --name $(Azure.ResourceGroup) --location $(Azure.Region)'
               - task: AzureResourceGroupDeployment@2
