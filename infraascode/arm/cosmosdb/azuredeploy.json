@@ -33,6 +33,7 @@
             "name": "[parameters('accountName')]",
             "location": "[parameters('location')]",
             "properties": {
+                "enableFreeTier": false,
                 "databaseAccountOfferType": "Standard",
                 "consistencyPolicy": {
                     "defaultConsistencyLevel": "Session"
