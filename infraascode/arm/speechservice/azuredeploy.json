@@ -1,0 +1,47 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "accountName": {
+            "defaultValue": "SpeechService",
+            "metadata": {
+                "description": "Display name of Speech Service API account"
+            },
+            "type": "string"
+        },
+        "SKU": {
+            "type": "string",
+            "metadata": {
+                "description": "SKU for Text Translation API"
+            },
+            "defaultValue": "F0",
+            "allowedValues": [
+              "F0",
+              "S1",
+              "S2",
+              "S3",
+              "S4"
+            ] 
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+            "description": "Specifies the location in which the Azure Storage resources should be deployed."
+        }
+      }
+    },
+         "resources": [
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "apiVersion": "2017-04-18",
+            "name": "[parameters('accountName')]",
+            "location":"[parameters('location')]",
+            "kind": "SpeechServices",
+            "sku": {
+                "name": "[parameters('SKU')]"
+            },
+            "properties": {}
+        }
+      ]
+  }
