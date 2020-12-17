@@ -1,0 +1,14 @@
+.vscode/extensions.json
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
+function/obj/project.assets.json
+function/obj/project.nuget.cache
+function/obj/TranslationFunc.csproj.nuget.dgspec.json
+function/obj/TranslationFunc.csproj.nuget.g.props
+function/obj/TranslationFunc.csproj.nuget.g.targets
+function/obj/Debug/netcoreapp3.1/.NETCoreApp,Version=v3.1.AssemblyAttributes.cs
+function/obj/Debug/netcoreapp3.1/TranslationFunc.AssemblyInfo.cs
+function/obj/Debug/netcoreapp3.1/TranslationFunc.AssemblyInfoInputs.cache
+function/obj/Debug/netcoreapp3.1/TranslationFunc.assets.cache
+function/obj/Debug/netcoreapp3.1/TranslationFunc.csprojAssemblyReference.cache

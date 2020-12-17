@@ -35,7 +35,7 @@ $storageContainerName = "translations"
 # 86400 secs (24 hours) but change to the minimum time needed
 $sastokenlength = 86400 
 
-Write-Output ("`nStep 1/4: Convert Opus OGG files from $originalaudiofolder to Wav file format")
+Write-Output ("`nStep 1/3: Convert Opus OGG files from $originalaudiofolder to Wav file format")
 Write-Output ("============================================================================================`n")
 
 $opusfiles = Get-ChildItem ($originalaudiofolder + "\*.ogg")
@@ -51,16 +51,13 @@ foreach ($opusfile in $opusfiles) {
 	}
 }
 
-Write-Output ("Step 2/4: Setting Speech CLI key and region")
+Write-Output ("`nStep 2/3: Translating and transcribing audio from " + $convertedaudiofolder)
 Write-Output ("============================================================================================`n")
 
 # Set the Speech Cognitive Service subscription key and region
 # Appears to be a bug with setting these in PowerShell so using cmd
 cmd /c "$spxcli config @key --set $speechkey"
 cmd /c "$spxcli config @region --set $speechregion"
-
-Write-Output ("`nStep 3/4: Translating and transcribing audio from " + $convertedaudiofolder)
-Write-Output ("============================================================================================`n")
 
 $audiofiles = Get-ChildItem ($convertedaudiofolder + "\*.wav")
 
@@ -75,7 +72,7 @@ foreach ($audiofile in $audiofiles) {
 	}
 }
 
-Write-Output ("`nStep 4/4: Copying output files to Azure blob storage")
+Write-Output ("`nStep 3/3: Copying output files to Azure blob storage")
 Write-Output ("============================================================================================`n")
 
 # Mostly copied from this blog post: https://techcommunity.microsoft.com/t5/itops-talk-blog/how-to-upload-files-to-azure-blob-storage-using-powershell-and/ba-p/650309
