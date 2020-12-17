@@ -6,7 +6,7 @@ trigger:
 
 variables:
   # General
-  Azure.Sub: ''
+  Azure.Sub: 'SpeechTranscriptionSub'
   Azure.ResourceGroup: 'SpeechTranscriptionRG'
   Azure.Region: 'UK South'
   # Storage
