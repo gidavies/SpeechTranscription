@@ -1,0 +1,96 @@
+# Example pipeline to provision Speech solution
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+
+variables:
+  # General
+  Azure.Sub: ''
+  Azure.ResourceGroup: 'SpeechTranscriptionRG'
+  Azure.Region: 'UK South'
+  # Storage
+  Storage.Type: 'Standard_LRS'
+  Storage.Name: 'gjadspeechstore'
+  Storage.Container.Name: 'translations'
+
+  #buildConfiguration: 'Release'
+  #ProjectName: 'BasicWebApp'
+  
+  #WebAppNameRoot: 'GDBasicWebApp'
+  #AppHostingPlanName: 'BasicWebAppPlan'
+  skipComponentGovernanceDetection: 'true' # Disable internal to Microsoft injected policy
+
+stages:
+- stage: Build
+  jobs:
+  - job: 'BuildAndPublish'
+    displayName: 'Build and Publish'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+#    - task: DotNetCoreCLI@2
+#      displayName: Restore
+#      inputs:
+#        command: restore
+#        projects: '$(ProjectName)/*.csproj'
+#    - task: DotNetCoreCLI@2
+#      displayName: Build
+#      inputs:
+#        projects: '$(ProjectName)/*.csproj'
+#        arguments: '--configuration $(BuildConfiguration)'
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Pipeline.Workspace)'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: 'infraascode/**'
+        TargetFolder: '$(Pipeline.Workspace)'
+#    - task: DotNetCoreCLI@2
+#      displayName: Publish
+#      inputs:
+#        command: publish
+#        publishWebProjects: True
+#        arguments: '--configuration $(BuildConfiguration) --output $(Pipeline.Workspace)'
+#        zipAfterPublish: True
+#    - task: PublishPipelineArtifact@1
+#      inputs:
+#        targetPath: '$(Pipeline.Workspace)'
+#        artifact: 'drop'
+
+- stage: Dev
+  jobs:
+    - deployment: DeploySolution
+      displayName: 'Deploy Solution To Azure'
+      pool:
+        vmImage: 'ubuntu-latest'
+      variables:
+        WebAppName: '$(WebAppNameRoot)Dev'
+      environment: Dev
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: DownloadPipelineArtifact@1
+                inputs:
+                  buildType: 'current'
+                  artifactName: 'drop'
+                  targetPath: '$(System.ArtifactsDirectory)/drop'
+              - task: AzureCLI@2
+                displayName: 'Create resource group $(Azure.ResourceGroup)'
+                inputs:
+                  azureSubscription: '$(Azure.Sub)'
+                  scriptType: 'ps'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az group create --name $(Azure.ResourceGroup) --location $(Azure.Region)'
+              - task: AzureResourceGroupDeployment@2
+                displayName: 'Create blob storage container'
+                inputs:
+                  azureSubscription: '$(Azure.Sub)'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '$(Azure.ResourceGroup)'
+                  location: '$(Azure.Region)'
+                  templateLocation: 'Linked artifact'
+                  csmFile: '$(System.ArtifactsDirectory)/drop/infraascode/ARM/storage/azuredeploy.json'
+                  csmParametersFile: '$(System.ArtifactsDirectory)/drop/infraascode/ARM/storage/azuredeploy.parameters.json'
+                  overrideParameters: '-storageAccountType "$(Storage.Type)" -storageAccountName $(Storage.Name) -containerName "$(Storage.Container.Name)" -location "$(Azure.Region)"'
+                  deploymentMode: 'Incremental'
