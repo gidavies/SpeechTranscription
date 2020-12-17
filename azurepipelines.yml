@@ -9,6 +9,9 @@ variables:
   Azure.Sub: 'SpeechTranscriptionSub'
   Azure.ResourceGroup: 'SpeechTranscriptionRG'
   Azure.Region: 'uksouth'
+  # Speech Service
+  Speech.Name: 'SpeechTranscriptionService'
+  Speech.SKU: 'S0'
   # Storage
   Storage.Type: 'Standard_LRS'
   Storage.Name: 'gjadspeechstore'
@@ -82,6 +85,18 @@ stages:
                   scriptType: 'pscore'
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az group create --name $(Azure.ResourceGroup) --location $(Azure.Region)'
+              - task: AzureResourceGroupDeployment@2
+                displayName: 'Create Speech cognitive service'
+                inputs:
+                  azureSubscription: '$(Azure.Sub)'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '$(Azure.ResourceGroup)'
+                  location: '$(Azure.Region)'
+                  templateLocation: 'Linked artifact'
+                  csmFile: '$(System.ArtifactsDirectory)/drop/infraascode/arm/speechservice/azuredeploy.json'
+                  csmParametersFile: '$(System.ArtifactsDirectory)/drop/infraascode/arm/speechservice/azuredeploy.parameters.json'
+                  overrideParameters: '-accountName "$(Speech.Name)" -SKU $(Speech.SKU) -location "$(Azure.Region)"'
+                  deploymentMode: 'Incremental'
               - task: AzureResourceGroupDeployment@2
                 displayName: 'Create blob storage container'
                 inputs:
