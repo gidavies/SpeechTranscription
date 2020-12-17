@@ -8,7 +8,7 @@ variables:
   # General
   Azure.Sub: 'SpeechTranscriptionSub'
   Azure.ResourceGroup: 'SpeechTranscriptionRG'
-  Azure.Region: 'UK South'
+  Azure.Region: 'uksouth'
   # Storage
   Storage.Type: 'Standard_LRS'
   Storage.Name: 'gjadspeechstore'
