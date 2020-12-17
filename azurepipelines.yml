@@ -52,10 +52,10 @@ stages:
 #        publishWebProjects: True
 #        arguments: '--configuration $(BuildConfiguration) --output $(Pipeline.Workspace)'
 #        zipAfterPublish: True
-#    - task: PublishPipelineArtifact@1
-#      inputs:
-#        targetPath: '$(Pipeline.Workspace)'
-#        artifact: 'drop'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'drop'
 
 - stage: Dev
   jobs:
