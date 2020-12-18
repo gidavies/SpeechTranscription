@@ -47,7 +47,7 @@ foreach ($opusfile in $opusfiles) {
         ffmpeg -i $opusfile $convertedfile -y
     }
 	catch {
-		Write-Output "$audiofile - $($_.Exception.Message)"
+		Write-Output "$opusfile - $($_.Exception.Message)"
 	}
 }
 
