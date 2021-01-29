@@ -68,6 +68,23 @@ foreach ($opusfile in $opusfiles) {
         
         # Remove the converted sound file. Only space required is for one converted audio file at a time, plus transcriptions
         Remove-Item $convertedfile
+
+        # Get the contents of the Azure Speech output file in order to change header values and add metadata
+        # Need the encoding option to preserve special characters e.g. Umlauts
+        $contents = Get-Content $translatedoutput -Encoding Unicode
+        $headers = $contents[0] -Replace 'audio.input.id', 'File Name' -Replace 'recognizer.session.started.sessionid', 'Azure Speech Id' -Replace 'recognizer.recognized.result.text', 'Original Text' -Replace 'recognizer.recognized.result.translated.text', 'Translated Text'
+        $data = $contents[1]
+        
+        # For each file metadata property to add to the file, add a suitable header and data, tab delimited
+        # To find the names of the properties check with Get-Item filename | Format-List
+        # Get the required meta data from the original file
+        # File creation timestamp
+        $headers += "`t" + "File Creation Time"
+        $data += "`t" + (Get-Item $opusfile | ForEach-Object {$_.CreationTime})
+        # Repeat for other required file metadata...
+
+        # Overwrite the original file with the new headers and data
+        ($headers + "`n" + $data) | Set-Content $translatedoutput -Encoding Unicode -Force 
     }
 	catch {
 		Write-Output "$opusfile - $($_.Exception.Message)"
